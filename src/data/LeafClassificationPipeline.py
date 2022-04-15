@@ -7,6 +7,7 @@ import logging
 
 RANDOM_STATE = 42
 
+
 class LeafClassificationPipeline:
     def __init__(self, config_file):
         self.logger = logging.getLogger(__name__)
