@@ -5,7 +5,7 @@ from pathlib import Path
 from dotenv import find_dotenv, load_dotenv
 import os
 import zipfile
-from pipeline import TransformationPipeline
+from pipeline import LeafClassificationPipeline
 import pandas as pd
 
 def unzip_all_file(file_path):
@@ -38,17 +38,17 @@ def download_dataset(p_project_dir, p_competition_name):
     unzip_all_file(zip_dataset_path)
 
 
-def main(input_filepath, output_filepath):
+def main(input_path, output_path):
     """ Runs data processing scripts to turn raw data from (../raw) into
         cleaned data ready to be analyzed (saved in ../processed).
     """
     logger = logging.getLogger(__name__)
     logger.info('making final data set from raw data')
-    logger.info('input: %s --- output: %s', input_filepath, output_filepath)
+    logger.info('input: %s --- output: %s', input_path, output_path)
 
     config_file_name = './data_cfg.yaml'
 
-    pipeline = TransformationPipeline(config_file_name)
+    pipeline = LeafClassificationPipeline(config_file_name)
 
     # Get the training file
     dataset_path = os.path.join(input_path, 'train.csv')
@@ -57,7 +57,32 @@ def main(input_filepath, output_filepath):
     # Drop the ID column
     dataset = dataset.drop(['id'], axis=1)
 
-    dataset.species = pipeline.encode_label(dataset.species)
+    # Encode all the labels
+    dataset_labels = pipeline.encode_label(dataset.species)
+
+    # Remove species from the data
+    dataset = dataset.drop(['species'], axis=1)
+
+    # Save the list of features, needed to recreate the dataframe after transformation
+    features = list(dataset.columns)
+
+    # split the traing data and the test data
+    train_data, train_labels, test_data, test_labels = pipeline.split_training_test_data(dataset, dataset_labels)
+
+    # Transform the data
+    train_data, test_data = pipeline.fit_transform(train_data, test_data)
+
+    # Convert back to dataframe to save as csv
+    train_data = pd.DataFrame(train_data, columns=features)
+    train_labels = pd.DataFrame(train_labels, columns=['species'])
+    test_data = pd.DataFrame(test_data, columns=features)
+    test_labels = pd.DataFrame(test_labels, columns=['species'])
+
+    # save the data in the output folder
+    train_data.to_csv(os.path.join(output_path, 'training_data.csv'), index=False)
+    train_labels.to_csv(os.path.join(output_path, 'training_labels.csv'), index=False)
+    test_data.to_csv(os.path.join(output_path, 'test_data.csv'), index=False)
+    test_labels.to_csv(os.path.join(output_path, 'test_labels.csv'), index=False)
 
 
 if __name__ == '__main__':
@@ -71,6 +96,5 @@ if __name__ == '__main__':
     # load up the .env entries as environment variables
     load_dotenv(find_dotenv())
 
-    input_path = os.path.join(project_dir, 'data', 'raw')
-    output_path = os.path.join(project_dir, 'data', 'processed')
-    main(input_path, output_path)
+    main(os.path.join(project_dir, 'data', 'raw'),
+         os.path.join(project_dir, 'data', 'processed'))

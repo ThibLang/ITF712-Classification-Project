@@ -1,2 +1,5 @@
 scaler: 'Standard'
 encoder: 'Label'
+
+# Split ratio - just the % of training data
+ratio: 80
