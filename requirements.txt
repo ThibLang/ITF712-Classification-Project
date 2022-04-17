@@ -2,16 +2,17 @@
 -e .
 
 # external requirements
-click~=8.0.4
+click
 Sphinx
 coverage
 awscli
 flake8
-python-dotenv>=0.5.1
+python-dotenv
 jupyter
-matplotlib~=3.5.1
-PyYAML~=5.4.1
-setuptools~=57.0.0
-sklearn~=0.0
-scikit-learn~=1.0.2
-pandas~=1.4.1
+matplotlib
+PyYAML
+setuptools
+sklearn
+scikit-learn
+pandas
+seaborn
