@@ -42,9 +42,9 @@ class DT(Classifier):
         hyp_grid = [
             {'splitter': ['best', 'random'],
              'criterion': ['gini', 'entropy'],
-             'max_depth':np.linspace(1, 20, num=10, dtype=int),
-             'min_samples_split': np.linspace(1, 500, num=20, dtype=int),
-             'min_samples_leaf': np.linspace(1, 500, num=20, dtype=int),
+             'max_depth': [None],
+             'min_samples_split': np.linspace(200, 600, num=20, dtype=int),
+             'min_samples_leaf': np.linspace(25, 75, num=20, dtype=int),
              'max_features': ['sqrt', 'log2', None],
              'random_state': [42]}
         ]
@@ -62,7 +62,6 @@ class DT(Classifier):
 
         # Saving the results in a jon file
         with open(self.name + '_hyp', 'w') as fp:
-            result.best_params_['max_depth'] = int(result.best_params_['max_depth'])
             result.best_params_['min_samples_split'] = int(result.best_params_['min_samples_split'])
             result.best_params_['min_samples_leaf'] = int(result.best_params_['min_samples_leaf'])
             json.dump(result.best_params_, fp)
