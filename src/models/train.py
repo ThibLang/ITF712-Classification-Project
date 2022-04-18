@@ -4,18 +4,23 @@ import numpy as np
 
 from pathlib import Path
 
-from LogisticRegression import LogisticRegressionClassifier
-from SVM import SVMClassifier
-from RandomForest import RFClassifier
-from MLP import MLP
-from KN import KN
+from src.models.LogisticRegression import LogisticRegressionClassifier
+from src.models.SVM import SVMClassifier
+from src.models.RandomForest import RFClassifier
+from src.models.MLP import MLP
+from src.models.KN import KN
+from src.models.DecisionTree import DT
 from sklearn.model_selection import StratifiedKFold
-from DecisionTree import DT
+
 from datetime import datetime
 
-def display_score(score):
+
+def display_score(name, score):
+    score_string = name + ': '
     for key in score:
-        print(key, ':', score[key])
+        score_string += key + '={:.4f}'.format(score[key]) + '\t'
+
+    print(score_string)
 
 
 def train(data_path):
@@ -47,11 +52,11 @@ def train(data_path):
     svm.cross_validate(data, labels, pre_trained=True)
     display_score(svm.get_score())
 
-    rf.cross_validate(data, labels, pre_trained=False)
-    display_score(rf.get_score())
-    rf.optimize(data, labels)
-    rf.cross_validate(data, labels, pre_trained=True)
-    display_score(rf.get_score())
+    dt.cross_validate(data, labels, pre_trained=False)
+    display_score(dt.get_score())
+    dt.optimize(data, labels)
+    dt.cross_validate(data, labels, pre_trained=True)
+    display_score(dt.get_score())
 
     mlp.cross_validate(data, labels, pre_trained=False)
     display_score(mlp.get_score())
@@ -64,16 +69,19 @@ def train(data_path):
     kn.optimize(data, labels)
     kn.cross_validate(data, labels, pre_trained=True)
     display_score(kn.get_score())
+    now = datetime.now()
 
-    dt.cross_validate(data, labels, pre_trained=False)
-    display_score(dt.get_score())
-    dt.optimize(data, labels)
-    dt.cross_validate(data, labels, pre_trained=True)
-    display_score(dt.get_score())
+    rf.cross_validate(data, labels, pre_trained=False)
+    display_score(rf.get_score())
+    rf.optimize(data, labels)
+    rf.cross_validate(data, labels, pre_trained=True)
+    display_score(rf.get_score())
 
     now = datetime.now()
+
     current_time = now.strftime("%H:%M:%S")
     print("End =", current_time)
+
 
 if __name__ == '__main__':
     project_root_dir = Path(os.path.abspath('')).resolve().parents[1]

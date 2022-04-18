@@ -1,7 +1,7 @@
 import numpy as np
 import json
 from sklearn.ensemble import RandomForestClassifier
-from Classifier import Classifier
+from src.models.Classifier import Classifier
 from sklearn.model_selection import RandomizedSearchCV
 from scipy.stats import loguniform
 

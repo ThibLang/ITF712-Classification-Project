@@ -1,7 +1,7 @@
 import numpy as np
 import json
 from sklearn.neural_network import MLPClassifier
-from Classifier import Classifier
+from src.models.Classifier import Classifier
 from sklearn.model_selection import RandomizedSearchCV
 
 
