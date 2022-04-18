@@ -36,7 +36,7 @@ class LeafClassificationPipeline:
 
         self.split_ratio = self.config['ratio']
         self.splitter = StratifiedShuffleSplit(n_splits=1,
-                                               test_size= 1.0 - self.split_ratio/100.0,
+                                               test_size=1.0 - self.split_ratio/100.0,
                                                random_state=RANDOM_STATE)
 
         self.transformation_pipeline = Pipeline([scaler])
