@@ -47,13 +47,13 @@ def train(data_path):
     data = pd.read_csv(os.path.join(data_path, 'training_data.csv'))
     labels = pd.read_csv(os.path.join(data_path, 'training_labels.csv'))
 
-    for clf in clf_list:
+    for clf, clf_o in zip(clf_list, clf_optimized_list):
         clf.cross_validate(data, labels, optimized=False)
-        clf_optimized_list.cross_validate(data, labels, optimized=True)
+        clf_o.cross_validate(data, labels, optimized=True)
 
-    for clf in clf_list:
+    for clf, clf_o in zip(clf_list, clf_optimized_list):
         display_score(clf.name, clf.get_score())
-        display_score(clf.name + '_o', clf.get_score())
+        display_score(clf_o.name + '_o', clf.get_score())
 
     print("End:", datetime.now().strftime("%H:%M:%S"))
 
