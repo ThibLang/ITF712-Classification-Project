@@ -1,8 +1,8 @@
 import os
 import pandas as pd
-import numpy as np
 
 from pathlib import Path
+from datetime import datetime
 
 from src.models.LogisticRegression import LogisticRegressionClassifier
 from src.models.SVM import SVMClassifier
@@ -11,8 +11,6 @@ from src.models.MLP import MLP
 from src.models.KN import KN
 from src.models.DecisionTree import DT
 from sklearn.model_selection import StratifiedKFold
-
-from datetime import datetime
 
 
 def display_score(name, score):

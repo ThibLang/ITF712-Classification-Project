@@ -11,7 +11,6 @@ class RFClassifier(Classifier):
         self.fold = fold
         self.clf = None
         self.name = "Random Forest"
-
         self.print('Creating')
 
     def initialize_classifier(self, pre_trained=False):
@@ -19,7 +18,7 @@ class RFClassifier(Classifier):
         if not pre_trained:
             self.clf = RandomForestClassifier()
         else:
-            with open(self.name + '_hyp', 'r') as fp:
+            with open(self.get_config_file_path(), 'r') as fp:
                 hyp = json.load(fp)
 
                 hyp_string = ''
@@ -61,7 +60,7 @@ class RFClassifier(Classifier):
         result = search.fit(data.values, np.ravel(labels.values))
 
         # Saving the results in a jon file
-        with open(self.name + '_hyp', 'w') as fp:
+        with open(self.get_config_file_path(), 'w') as fp:
             result.best_params_['n_estimators'] = int(result.best_params_['n_estimators'])
             result.best_params_['max_depth'] = int(result.best_params_['max_depth'])
             json.dump(result.best_params_, fp)
