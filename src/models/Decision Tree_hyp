@@ -1,1 +1,1 @@
-{"splitter": "best", "random_state": 42, "min_samples_split": 447, "min_samples_leaf": 132, "max_features": "sqrt", "max_depth": 20, "criterion": "gini"}
+{"splitter": "best", "random_state": 42, "min_samples_split": 431, "min_samples_leaf": 27, "max_features": null, "max_depth": null, "criterion": "gini"}
