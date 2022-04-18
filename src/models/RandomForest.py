@@ -57,9 +57,9 @@ class RFClassifier(Classifier):
         self.print('Start optimization')
 
         hyp_grid = [
-            {'n_estimators': [1000, 2500, 4000, 5500],
+            {'n_estimators': np.linspace(1000, 10000, num=10, dtype=int),
              'criterion': ['gini', 'entropy'],
-             'max_depth':[8, 10, 12],
+             'max_depth':np.linspace(1, 100, num=10, dtype=int),
              'min_samples_split': [2, 4, 6, 8],
              'min_samples_leaf': [1, 2, 4],
              'max_features': ['sqrt', 'log2', None],
@@ -79,6 +79,8 @@ class RFClassifier(Classifier):
 
         # Saving the results in a jon file
         with open(self.name + '_hyp', 'w') as fp:
+            result.best_params_['n_estimators'] = int(result.best_params_['n_estimators'])
+            result.best_params_['max_depth'] = int(result.best_params_['max_depth'])
             json.dump(result.best_params_, fp)
 
         self.print('end optimization')
