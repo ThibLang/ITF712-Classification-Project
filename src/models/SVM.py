@@ -1,33 +1,24 @@
 import numpy as np
 import json
-from sklearn.linear_model import LogisticRegression
+from sklearn.svm import SVC
 from Classifier import Classifier
 from sklearn.model_selection import RandomizedSearchCV
 from scipy.stats import loguniform
 
-# This code section avoid to be flooded with ConvergenceWarning from the randomizeSearch
-import sys
-import warnings
-import os
-if not sys.warnoptions:
-    warnings.simplefilter("ignore")
-    os.environ["PYTHONWARNINGS"] = "ignore"
-###
 
-
-class LogisticRegressionClassifier(Classifier):
+class SVMClassifier(Classifier):
     def __init__(self, fold):
         super().__init__()
         self.fold = fold
-        self.logistic_regression = None
-        self.name = "Logistic Regression"
+        self.svm = None
+        self.name = "SVM"
 
         self.print('Creating')
 
     def initialize_classifier(self, pre_trained=False):
         self.print('Initialization')
         if not pre_trained:
-            self.logistic_regression = LogisticRegression()
+            self.svm = SVC(probability=True)
         else:
             with open(self.name + '_hyp', 'r') as fp:
                 hyp = json.load(fp)
@@ -37,7 +28,14 @@ class LogisticRegressionClassifier(Classifier):
                     hyp_string += key + ':' + str(hyp[key]) + ' '
                 self.print(hyp_string)
 
-            self.logistic_regression = LogisticRegression(C=hyp['C'], penalty=hyp['penalty'], solver=hyp['solver'])
+            if hyp['kernel'] == 'linear' or hyp['kernel'] == 'sigmoid':
+                self.svm = SVC(kernel=hyp['kernel'], C=hyp['C'], probability=True)
+
+            elif hyp['kernel'] == 'poly':
+                self.svm = SVC(kernel=hyp['kernel'], C=hyp['C'], degree=hyp['degree'], probability=True)
+
+            elif hyp['kernel'] == 'rbf':
+                self.svm = SVC(kernel=hyp['kernel'], C=hyp['C'], gamma=hyp['gamma'], probability=True)
 
     def cross_validate(self, data, labels, pre_trained=False):
         self.initialize_classifier(pre_trained)
@@ -47,10 +45,10 @@ class LogisticRegressionClassifier(Classifier):
             training_data, test_data = data.values[training_index], data.values[test_index]
             training_label, test_label = labels.values[training_index], labels.values[test_index]
 
-            self.logistic_regression.fit(training_data, np.ravel(training_label))
+            self.svm.fit(training_data, np.ravel(training_label))
 
-            y_pred = self.logistic_regression.predict(test_data)
-            y_proba = self.logistic_regression.predict_proba(test_data)
+            y_pred = self.svm.predict(test_data)
+            y_proba = self.svm.predict_proba(test_data)
             self.compute_test_results(test_label, y_pred, y_proba)
 
         self.end_training()
@@ -60,19 +58,27 @@ class LogisticRegressionClassifier(Classifier):
         self.print('Start optimization')
 
         hyp_grid = [
-            {'solver': ['newton-cg'], 'penalty': ['l2'], 'C': loguniform(1e-5, 1000)},
-            {'solver': ['lbfgs'], 'penalty': ['l2'], 'C': loguniform(1e-5, 1000)},
-            {'solver': ['liblinear'], 'penalty': ['l1', 'l2'], 'C': loguniform(1e-5, 1000)},
-            {'solver': ['sag'], 'penalty': ['l2'], 'C': loguniform(1e-5, 1000)},
-            {'solver': ['saga'], 'penalty': ['elasticnet', 'l1', 'l2'], 'C': loguniform(1e-5, 1000)}
+            {'kernel': ['linear', 'sigmoid'],
+             'C': np.logspace(-3, 100, 5),
+             'probability':[True]},
+            {'kernel': ['poly'],
+             'C': np.logspace(-3, 100, 5),
+             'probability': [True],
+             'degree': [1, 3, 5, 10],
+             'gamma': ['scale', 'auto']},
+            {'kernel': ['rbf', ],
+             'C': np.logspace(-3, 100, 5),
+             'probability': [True],
+             'gamma': np.logspace(-3, 100, 5)}
         ]
 
-        search = RandomizedSearchCV(self.logistic_regression,
+        search = RandomizedSearchCV(self.svm,
                                     hyp_grid,
-                                    n_iter=100,
+                                    n_iter=5,
                                     scoring='neg_log_loss',
                                     cv=self.fold,
                                     random_state=42,
+                                    verbose=True,
                                     n_jobs=-1)
 
         result = search.fit(data.values, np.ravel(labels.values))
