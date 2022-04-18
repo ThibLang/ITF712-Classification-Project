@@ -1,7 +1,7 @@
 import numpy as np
 import json
 from sklearn.tree import DecisionTreeClassifier
-from Classifier import Classifier
+from src.models.Classifier import Classifier
 from sklearn.model_selection import RandomizedSearchCV
 
 
@@ -9,7 +9,7 @@ class DT(Classifier):
     def __init__(self, fold):
         super().__init__()
         self.fold = fold
-        self.DT = None
+        self.clf = None
         self.name = "Decision Tree"
 
         self.print('Creating')
@@ -17,7 +17,7 @@ class DT(Classifier):
     def initialize_classifier(self, pre_trained=False):
         self.print('Initialization')
         if not pre_trained:
-            self.DT = DecisionTreeClassifier()
+            self.clf = DecisionTreeClassifier()
         else:
             with open(self.name + '_hyp', 'r') as fp:
                 hyp = json.load(fp)
@@ -27,29 +27,13 @@ class DT(Classifier):
                     hyp_string += key + ':' + str(hyp[key]) + ' '
                 self.print(hyp_string)
 
-            self.DT = DecisionTreeClassifier(splitter=hyp['splitter'],
-                                             criterion=hyp['criterion'],
-                                             max_depth=hyp['max_depth'],
-                                             min_samples_split=hyp['min_samples_split'],
-                                             min_samples_leaf=hyp['min_samples_leaf'],
-                                             max_features=hyp['max_features'],
-                                             random_state=hyp['random_state'])
-
-    def cross_validate(self, data, labels, pre_trained=False):
-        self.initialize_classifier(pre_trained)
-
-        self.start_training()
-        for training_index, test_index in self.fold.split(data, labels):
-            training_data, test_data = data.values[training_index], data.values[test_index]
-            training_label, test_label = labels.values[training_index], labels.values[test_index]
-
-            self.DT.fit(training_data, np.ravel(training_label))
-
-            y_pred = self.DT.predict(test_data)
-            y_proba = self.DT.predict_proba(test_data)
-            self.compute_test_results(test_label, y_pred, y_proba)
-
-        self.end_training()
+            self.clf = DecisionTreeClassifier(splitter=hyp['splitter'],
+                                              criterion=hyp['criterion'],
+                                              max_depth=hyp['max_depth'],
+                                              min_samples_split=hyp['min_samples_split'],
+                                              min_samples_leaf=hyp['min_samples_leaf'],
+                                              max_features=hyp['max_features'],
+                                              random_state=hyp['random_state'])
 
     def optimize(self, data, labels):
         self.initialize_classifier()
@@ -65,7 +49,7 @@ class DT(Classifier):
              'random_state': [42]}
         ]
 
-        search = RandomizedSearchCV(self.DT,
+        search = RandomizedSearchCV(self.clf,
                                     hyp_grid,
                                     n_iter=200,
                                     scoring='neg_log_loss',

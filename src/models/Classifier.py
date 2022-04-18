@@ -75,5 +75,29 @@ class Classifier:
         """
         print(self.name + ':' + string)
 
+    def cross_validate(self, data, labels, optimized=False):
+        """"
+        Cross validate the data and generate score for all the fold.
+        Can be used with basic or with optimized hyper-parameters
+        :param data: training data
+        :param labels: training labels
+        :param pre_trained: boolean, use true to cross validate with optimized hyper-parameters
+        :return: nothing
+        """
+        self.initialize_classifier(optimized)
+
+        self.start_training()
+        for training_index, test_index in self.fold.split(data, labels):
+            training_data, test_data = data.values[training_index], data.values[test_index]
+            training_label, test_label = labels.values[training_index], labels.values[test_index]
+
+            self.clf.fit(training_data, np.ravel(training_label))
+
+            y_pred = self.clf.predict(test_data)
+            y_proba = self.clf.predict_proba(test_data)
+            self.compute_test_results(test_label, y_pred, y_proba)
+
+        self.end_training()
+
 
 
