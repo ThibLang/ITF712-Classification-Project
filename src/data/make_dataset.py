@@ -4,7 +4,7 @@ from pathlib import Path
 from dotenv import find_dotenv, load_dotenv
 import os
 import zipfile
-from LeafClassificationPipeline import LeafClassificationPipeline
+from src.data.LeafClassificationPipeline import LeafClassificationPipeline
 import pandas as pd
 
 
@@ -38,7 +38,7 @@ def download_dataset(p_project_dir, p_competition_name):
     unzip_all_file(zip_dataset_path)
 
 
-def main(input_path, output_path):
+def create_dataset(input_path, output_path, cfg=None):
     """ Runs data processing scripts to turn raw data from (../raw) into
         cleaned data ready to be analyzed (saved in ../processed).
     """
@@ -46,9 +46,7 @@ def main(input_path, output_path):
     logger.info('making final data set from raw data')
     logger.info('input: %s --- output: %s', input_path, output_path)
 
-    config_file_name = './data_cfg.yaml'
-
-    pipeline = LeafClassificationPipeline(config_file_name)
+    pipeline = LeafClassificationPipeline(cfg)
 
     # Get the training file
     dataset_path = os.path.join(input_path, 'train.csv')
@@ -96,5 +94,5 @@ if __name__ == '__main__':
     # load up the .env entries as environment variables
     load_dotenv(find_dotenv())
 
-    main(os.path.join(project_dir, 'data', 'raw'),
-         os.path.join(project_dir, 'data', 'processed'))
+    create_dataset(os.path.join(project_dir, 'data', 'raw'),
+                   os.path.join(project_dir, 'data', 'processed'))
