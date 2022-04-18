@@ -1,5 +1,7 @@
 from sklearn.metrics import f1_score, precision_score, recall_score, accuracy_score, log_loss
 import numpy as np
+from pathlib import Path
+import os
 
 
 class Classifier:
@@ -8,12 +10,15 @@ class Classifier:
         Initialization
         : return: nothing
         """
+        self.root_config_file = Path(__file__).resolve().parents[0]
+
         self.f1_score = []
         self.precision_score = []
         self.recall_score = []
         self.accuracy_score = []
         self.log_loss = []
 
+        self.config_file = None
         self.results = None
 
     def start_training(self):
@@ -98,6 +103,13 @@ class Classifier:
             self.compute_test_results(test_label, y_pred, y_proba)
 
         self.end_training()
+
+    def get_config_file_path(self):
+        """
+        Build the config file name
+        :return: string with the path of the config file
+        """
+        return os.path.join(self.root_config_file, self.name + '_hyp')
 
 
 

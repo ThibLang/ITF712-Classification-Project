@@ -19,7 +19,7 @@ class SVMClassifier(Classifier):
         if not pre_trained:
             self.clf = SVC(probability=True)
         else:
-            with open(self.name + '_hyp', 'r') as fp:
+            with open(self.get_config_file_path(), 'r') as fp:
                 hyp = json.load(fp)
 
                 hyp_string = ''
@@ -67,7 +67,7 @@ class SVMClassifier(Classifier):
         result = search.fit(data.values, np.ravel(labels.values))
 
         # Saving the results in a jon file
-        with open(self.name + '_hyp', 'w') as fp:
+        with open(self.get_config_file_path(), 'w') as fp:
             json.dump(result.best_params_, fp)
 
         self.print('end optimization')
