@@ -1,1 +1,1 @@
-{"C": 0.9881716385404168, "degree": 1, "gamma": "scale", "kernel": "poly", "probability": true}
+{"probability": true, "kernel": "poly", "gamma": "auto", "degree": 1, "C": 1.7782794100389228e+74}
