@@ -1,1 +1,1 @@
-{"weights": "uniform", "p": 1, "n_neighbors": 5, "leaf_size": 120, "algorithm": "ball_tree"}
+{"solver": "lbfgs", "learning_rate": "adaptive", "hidden_layer_sizes": 100, "early_stopping": true, "alpha": 0.07196856730011521}
