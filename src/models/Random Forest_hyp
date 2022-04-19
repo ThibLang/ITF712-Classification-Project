@@ -1,1 +1,1 @@
-{"random_state": 42, "n_estimators": 4000, "min_samples_split": 2, "min_samples_leaf": 1, "max_features": null, "max_depth": 12, "criterion": "entropy"}
+{"random_state": 42, "n_estimators": 1000, "min_samples_split": 6, "min_samples_leaf": 2, "max_features": "auto", "max_depth": 10, "criterion": "entropy"}
