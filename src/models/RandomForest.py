@@ -39,12 +39,12 @@ class RFClassifier(Classifier):
         self.print('Start optimization')
 
         hyp_grid = [
-            {'n_estimators': np.linspace(1000, 10000, num=10, dtype=int),
+            {'n_estimators': np.linspace(100, 1000, num=10, dtype=int),
              'criterion': ['gini', 'entropy'],
-             'max_depth':np.linspace(1, 100, num=10, dtype=int),
+             'max_depth':np.linspace(1, 10, num=5, dtype=int),
              'min_samples_split': [2, 4, 6, 8],
              'min_samples_leaf': [1, 2, 4],
-             'max_features': ['sqrt', 'log2', None],
+             'max_features': ['sqrt', 'log2', 'auto'],
              'random_state': [42]}
         ]
 

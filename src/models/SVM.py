@@ -50,7 +50,7 @@ class SVMClassifier(Classifier):
              'degree': [1, 3, 5, 10],
              'gamma': ['scale', 'auto']},
             {'kernel': ['rbf', ],
-             'C': np.logspace(-3, 100, 5),
+             'C': np.logspace(-3, 2, 5),
              'probability': [True],
              'gamma': np.logspace(-3, 1, 5)}
         ]

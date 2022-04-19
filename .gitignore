@@ -85,3 +85,5 @@ target/
 # Mypy cache
 .mypy_cache/
 data/raw/leaf-classification/
+~$apport.docx
+~WRL2794.tmp

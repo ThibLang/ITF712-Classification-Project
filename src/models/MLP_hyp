@@ -1,1 +1,1 @@
-{"solver": "lbfgs", "learning_rate": "adaptive", "hidden_layer_sizes": 100, "early_stopping": true, "alpha": 0.07196856730011521}
+{"solver": "lbfgs", "learning_rate": "adaptive", "hidden_layer_sizes": 500, "early_stopping": true, "alpha": 0.07196856730011521}
