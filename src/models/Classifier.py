@@ -111,5 +111,12 @@ class Classifier:
         """
         return os.path.join(self.root_config_file, self.name + '_hyp')
 
+    def validate(self, data, labels):
+        self.start_training()
+        y_pred = self.clf.predict(data)
+        y_proba = self.clf.predict_proba(data)
+        self.compute_test_results(labels, y_pred, y_proba)
+        self.end_training()
+
 
 
