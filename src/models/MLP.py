@@ -39,7 +39,7 @@ class MLP(Classifier):
 
         hyp_grid = [
             {'hidden_layer_sizes': [100, (100, 100), 500, (500, 500)],
-             'solver': ['lbfgs', 'sgd', 'adam'],
+             'solver': ['lbfgs', 'adam'],
              'alpha':np.logspace(-3, 10, 8),
              'learning_rate': ['adaptive'],
              'early_stopping': [True]}

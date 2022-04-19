@@ -38,7 +38,7 @@ class KN(Classifier):
         self.print('Start optimization')
 
         hyp_grid = [
-            {'n_neighbors': [1, 2, 3, 4, 5, 6],
+            {'n_neighbors': [4, 5, 6, 8, 10, 12],
              'weights': ['uniform', 'distance'],
              'algorithm': ['auto', 'ball_tree', 'kd_tree'],
              'leaf_size': np.linspace(200, 600, num=50, dtype=int),
